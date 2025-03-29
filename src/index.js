@@ -52,11 +52,11 @@ client.on('message', async (message) => {
     }
 
     // Comandos disponíveis
-    if (message.body.startsWith('/')) {
+    if (message.body.startsWith('!')) {
         const command = message.body.toLowerCase();
         
         switch (command) {
-            case '/registro':
+            case '!registro':
                 // Inicia o processo de registro
                 userStates[from] = {
                     step: 'AGUARDANDO_LOCALIZACAO'
@@ -64,14 +64,14 @@ client.on('message', async (message) => {
                 message.reply('Por favor, envie sua localização atual.');
                 break;
 
-            case '/ajuda':
+            case '!ajuda':
                 message.reply(`Comandos disponíveis:
-                    /registro - Iniciar processo de registro
-                    /ajuda - Mostrar esta mensagem`);
+                    !registro - Iniciar processo de registro
+                    !ajuda - Mostrar esta mensagem`);
                 break;
 
             default:
-                message.reply('Comando não reconhecido. Digite /ajuda para ver os comandos disponíveis.');
+                message.reply('Comando não reconhecido. Digite !ajuda para ver os comandos disponíveis.');
                 break;
         }
     }
