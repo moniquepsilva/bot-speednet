@@ -20,7 +20,6 @@ client.on('ready', () => {
 });
 
 client.on('message', async (message) => {
-    console.log('Mensagem recebida:', message.body);
     
     const from = message.from; // número do usuário
     
@@ -47,6 +46,18 @@ client.on('message', async (message) => {
                     message.reply('Por favor, envie sua localização atual.');
                 }
                 break;
+
+            case 'AGUARDANDO_NOME':
+                const name = message.body;
+                await prisma.user.create({
+                    data: {
+                        name: name,
+                        phone: from
+                    }
+                });
+                message.reply('Registro completo! Bem vindo ao sistema '+name);
+                delete userStates[from]; // limpa o estado do usuário
+                break
         }
         return;
     }
@@ -54,16 +65,35 @@ client.on('message', async (message) => {
     // Comandos disponíveis
     if (message.body.startsWith('!')) {
         const command = message.body.toLowerCase();
+        const user = await prisma.user.findUnique({
+            where: { phone: from }
+        });
+        if (!user && command !== '!registro') {
+            message.reply('Você não está registrado no sistema. Digite !registro para se registrar.');
+            return;
+        }
         
         switch (command) {
-            case '!registro':
-                // Inicia o processo de registro
+            case '!ponto':
+                // Inicia o processo de registro de um ponto
                 userStates[from] = {
                     step: 'AGUARDANDO_LOCALIZACAO'
                 };
                 message.reply('Por favor, envie sua localização atual.');
                 break;
-
+            
+            case '!registro':
+                if (user) {
+                    message.reply('Você já está registrado no sistema. Digite !ponto para registrar um ponto.');
+                    return;
+                }
+                // Inicia o processo de registro de um novo usuário
+                userStates[from] = {
+                    step: 'AGUARDANDO_NOME'
+                };
+                message.reply('Por favor, envie seu nome completo.');
+                break;
+                
             case '!ajuda':
                 message.reply(`Comandos disponíveis:
                     !registro - Iniciar processo de registro

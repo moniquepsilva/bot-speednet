@@ -18,10 +18,8 @@ model Message {
 model User {
   id        Int      @id @default(autoincrement())
   name      String
-  phone     String
+  phone     String   @unique
   admin     Boolean  @default(false)
-  latitude  Float?   // Campo opcional para latitude
-  longitude Float?   // Campo opcional para longitude
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
