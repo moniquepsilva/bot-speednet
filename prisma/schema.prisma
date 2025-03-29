@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Exemplo de modelo para mensagens
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String   // O conteúdo da mensagem
+  from      String   // Quem enviou
+  timestamp DateTime @default(now()) // Quando foi enviado
+} 
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  admin     Boolean  @default(false)
+  latitude  Float?   // Campo opcional para latitude
+  longitude Float?   // Campo opcional para longitude
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
